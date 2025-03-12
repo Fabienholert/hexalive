@@ -1,9 +1,11 @@
 import { NavLink } from "react-router-dom";
 import MonLogo from "../../assets/monlogo.png";
+import "./header.scss";
 
 export default function Header() {
   return (
     <header className="header">
+      <img src={MonLogo} alt="mon logo " className="header__monLogo" />
       <nav className="header__nav">
         <NavLink to="/" className="header__link">
           {" "}
@@ -30,7 +32,6 @@ export default function Header() {
           Mail d'accréditation
         </NavLink>
       </nav>
-      <img src={MonLogo} alt="mon logo " className="header__monLogo" />
     </header>
   );
 }
