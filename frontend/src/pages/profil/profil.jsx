@@ -9,6 +9,7 @@ export default function Profil() {
   const [facebook, setFacebook] = useState("");
   const [instagram, setInstagram] = useState("");
   const [tiktok, setTiktok] = useState("");
+  const [username, setUsername] = useState(""); // Ajout de l'état pour le nom d'utilisateur
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +31,16 @@ export default function Profil() {
       <form onSubmit={handleSubmit}>
         <fieldset>
           <legend>Informations personnelles</legend>
+          <label htmlFor="username">Nom d'utilisateur</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Votre nom d'utilisateur"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -52,12 +63,12 @@ export default function Profil() {
           />
           <label htmlFor="codepostal">Code Postal</label>
           <input
-            type="text"
+            type="text" // Utilisation de type="text" pour gérer les codes postaux commençant par 0
             id="codepostal"
             name="codepostal"
             placeholder="Votre code postal"
             required
-            pattern="[0-9]{5}"
+            pattern="[0-9]{5}" // Validation: 5 chiffres
             title="Veuillez entrer un code postal à 5 chiffres"
             value={codePostal}
             onChange={(e) => setCodePostal(e.target.value)}
