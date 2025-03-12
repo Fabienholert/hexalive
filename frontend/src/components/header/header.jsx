@@ -10,17 +10,25 @@ export default function Header() {
           {" "}
           Accueil
         </NavLink>
-        <NavLink to="/Profil" className="header__link">
+        <NavLink to="/profil" className="header__link">
           {" "}
           Profil
         </NavLink>
-        <NavLink to="/Projet2" className="header__link">
+        <NavLink to="/calendrier" className="header__link">
           {" "}
-          Projet 2
+          Calendrier
         </NavLink>
-        <NavLink to="/Projet2" className="header__link">
+        <NavLink to="/tableau" className="header__link">
           {" "}
-          Projet 2
+          Tableau d'accréditation
+        </NavLink>
+        <NavLink to="/carte" className="header__link">
+          {" "}
+          Carte des membres
+        </NavLink>
+        <NavLink to="/mail" className="header__link">
+          {" "}
+          Mail d'accréditation
         </NavLink>
       </nav>
       <img src={MonLogo} alt="mon logo " className="header__monLogo" />
