@@ -10,6 +10,7 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/profil" element={<Profil />} />
+            <Route path="/calendrier" element={<Calendrier />} />
             <Route path="/tableau" element={<Tableau />} />
             <Route path="/carte" element={<Carte />} />
             <Route path="/mail" element={<Mail />} />
