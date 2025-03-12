@@ -7,8 +7,6 @@ export default function Home() {
 
     const elements = form.elements;
 
-    console.log(elements);
-
     const email = elements.email.value;
     const password = elements.password.value;
 

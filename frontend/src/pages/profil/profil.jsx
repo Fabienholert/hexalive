@@ -1,8 +1,26 @@
 export default function Profil() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const elements = form.elements;
+
+    const email = elements.email.value;
+    const password = elements.password.value;
+    const ville = elements.ville.value;
+    const codepostal = elements.codepostal.value;
+    const facebook = elements.facebook.value;
+    const instagram = elements.instagram.value;
+    const tiktok = elements.tiktok.value;
+
+    form.reset();
+    alert(`email= ${email} Password: ${password}`);
+  };
+
   return (
     <div className="profil__container">
-      <form>
-        <label for="email"> Email </label>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="email"> Email </label>
         <input
           type="email"
           id="email"
@@ -10,7 +28,7 @@ export default function Profil() {
           placeholder="Votre email"
           required
         />
-        <label for="password">Password</label>
+        <label htmlFor="password">Password</label>
         <input
           type="password"
           id="email"
@@ -18,15 +36,15 @@ export default function Profil() {
           placeholder="votre mot de passe"
           required
         />
-        <label for="number">Code Postale</label>
+        <label htmlFor="codepostal">Code Postal</label>
         <input
           type="number"
-          id="codepostale"
-          name="codepostale"
-          placeholder="votre code postale"
+          id="codepostal"
+          name="codepostal"
+          placeholder="votre code postal"
           required
         />
-        <label for="text">ville</label>
+        <label htmlFor="ville">ville</label>
         <input
           type="text"
           id="ville"
@@ -35,14 +53,14 @@ export default function Profil() {
           required
         />
 
-        <label for="text">Facebook</label>
+        <label htmlFor="facebook">Facebook</label>
         <input
           type="text"
           id="facebook"
           name="facebook"
           placeholder="votre facebook"
         />
-        <label for="text">Instagram</label>
+        <label htmlFor="instagram">Instagram</label>
         <input
           type="text"
           id="instagram"
@@ -50,7 +68,7 @@ export default function Profil() {
           placeholder="votre instagram"
           required
         />
-        <label for="text">Tiktok</label>
+        <label htmlForr="tiktok">Tiktok</label>
         <input
           type="text"
           id="tiktok"
