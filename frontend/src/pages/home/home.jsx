@@ -1,6 +1,8 @@
+import "./home.scss";
+
 export default function Home() {
   return (
-    <div className="Home__container">
+    <div className="home__container">
       <form>
         <label for="email"> Email </label>
         <input
@@ -18,7 +20,7 @@ export default function Home() {
           placeholder="votre mot de passe"
           required
         />
-        <input type="submit" value="Envoyer" />
+        <input type="submit" value="Se connecter" />
         <input type="submit" value="S inscrire" />
       </form>
     </div>
