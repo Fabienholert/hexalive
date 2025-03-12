@@ -1,3 +1,5 @@
+import "./profil.scss";
+
 export default function Profil() {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,28 +16,11 @@ export default function Profil() {
     const tiktok = elements.tiktok.value;
 
     form.reset();
-    alert(`email= ${email} Password: ${password}`);
   };
 
   return (
     <div className="profil__container">
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email"> Email </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Votre email"
-          required
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="email"
-          name="password"
-          placeholder="votre mot de passe"
-          required
-        />
         <label htmlFor="codepostal">Code Postal</label>
         <input
           type="number"
@@ -68,7 +53,7 @@ export default function Profil() {
           placeholder="votre instagram"
           required
         />
-        <label htmlForr="tiktok">Tiktok</label>
+        <label htmlFor="tiktok">Tiktok</label>
         <input
           type="text"
           id="tiktok"
