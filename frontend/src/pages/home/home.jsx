@@ -1,10 +1,24 @@
 import "./home.scss";
 
 export default function Home() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const elements = form.elements;
+
+    console.log(elements);
+
+    const email = elements.email.value;
+    const password = elements.password.value;
+
+    form.reset();
+    alert(`email= ${email} Password: ${password}`);
+  };
   return (
     <div className="home__container">
-      <form>
-        <label for="email"> Email </label>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="email"> Email </label>
         <input
           type="email"
           id="email"
@@ -12,10 +26,10 @@ export default function Home() {
           placeholder="Votre email"
           required
         />
-        <label for="password">Password</label>
+        <label htmlFor="password">Password</label>
         <input
           type="password"
-          id="email"
+          id="password"
           name="password"
           placeholder="votre mot de passe"
           required
