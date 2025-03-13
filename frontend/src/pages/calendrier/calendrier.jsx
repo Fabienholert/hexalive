@@ -1,153 +1,75 @@
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
 import {
-  addDays,
-  addMonths,
-  endOfMonth,
-  endOfWeek,
-  format,
-  isSameDay,
-  isSameMonth,
-  startOfMonth,
-  startOfWeek,
-  subMonths,
-} from "date-fns";
-import { fr } from "date-fns/locale";
-import React, { useState } from "react";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material"; // Exemple avec Material-UI
+import moment from "moment";
+import React, { useCallback, useState } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import EventForm from "./EventForm";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-  },
-});
+const localizer = momentLocalizer(moment);
 
-function MyCalendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+const MyCalendar = () => {
+  const [events, setEvents] = useState([]); // Initialisez avec vos données d'événements
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+  const handleSelectEvent = useCallback((event) => {
+    setSelectedEvent(event);
+    setIsFormOpen(true);
+  }, []);
+
+  const handleSelectSlot = useCallback(({ start, end }) => {
+    setSelectedEvent({ start, end }); // Passer start et end pour pré-remplir le formulaire
+    setIsFormOpen(true);
+  }, []);
+
+  const handleFormSubmit = (newEvent) => {
+    setEvents([...events, newEvent]); // Ajouter l'événement au calendrier
+    setIsFormOpen(false);
   };
 
-  const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
-  };
-
-  const handleSelectDate = (day) => {
-    setSelectedDate(day);
-  };
-
-  const renderHeader = () => {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <IconButton onClick={handlePrevMonth}>
-          <ArrowBackIosIcon />
-        </IconButton>
-        <Typography variant="h6">
-          {format(currentMonth, "MMMM yyyy", { locale: fr })}
-        </Typography>
-        <IconButton onClick={handleNextMonth}>
-          <ArrowForwardIosIcon />
-        </IconButton>
-      </Box>
-    );
-  };
-
-  const renderDays = () => {
-    const startDate = startOfWeek(startOfMonth(currentMonth));
-    const endDate = endOfWeek(endOfMonth(currentMonth));
-    const dateFormat = "d";
-    const rows = [];
-
-    let days = [];
-    let currentDate = startDate;
-
-    while (currentDate <= endDate) {
-      for (let i = 0; i < 7; i++) {
-        days.push(
-          <Grid
-            item
-            key={currentDate}
-            xs={1.714} // Ajustement pour 7 jours
-            sx={{
-              textAlign: "center",
-              py: 1,
-              cursor: "pointer",
-              border: "1px solid #eee",
-              backgroundColor: isSameDay(currentDate, selectedDate)
-                ? theme.palette.primary.light
-                : "transparent",
-              color: isSameMonth(currentDate, currentMonth)
-                ? "inherit"
-                : "#aaa",
-              "&:hover": {
-                backgroundColor: theme.palette.primary.light,
-              },
-            }}
-            onClick={() => handleSelectDate(currentDate)}
-          >
-            <Typography>
-              {format(currentDate, dateFormat, { locale: fr })}
-            </Typography>
-          </Grid>
-        );
-        currentDate = addDays(currentDate, 1);
-      }
-      rows.push(
-        <Grid container key={currentDate}>
-          {days}
-        </Grid>
-      );
-      days = [];
-    }
-    return rows;
-  };
-
-  const renderCalendar = () => {
-    const dateFormat = "EEEE";
-    const days = [];
-    let startDate = startOfWeek(currentMonth);
-    for (let i = 0; i < 7; i++) {
-      days.push(
-        <Grid item key={i} xs={1.714} style={{ textAlign: "center" }}>
-          <Typography>
-            {format(addDays(startDate, i), dateFormat, { locale: fr })}
-          </Typography>
-        </Grid>
-      );
-    }
-    return (
-      <Grid container sx={{ mb: 2 }}>
-        {days}
-      </Grid>
-    );
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setSelectedEvent(null); // Réinitialiser l'événement sélectionné
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ width: 400, mx: "auto" }}>
-        {" "}
-        {/* Ajuster la largeur */}
-        {renderHeader()}
-        {renderCalendar()}
-        {renderDays()}
-      </Box>
-    </ThemeProvider>
+    <div style={{ height: "500px" }}>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ margin: "20px" }}
+        onSelectEvent={handleSelectEvent}
+        selectable={true} // Important pour activer la sélection de plages horaires
+        onSelectSlot={handleSelectSlot}
+      />
+
+      <Dialog open={isFormOpen} onClose={handleCloseForm}>
+        <DialogTitle>
+          {selectedEvent ? "Edit Event" : "Create Event"}
+        </DialogTitle>
+        <DialogContent>
+          <EventForm
+            initialValues={
+              selectedEvent || { title: "", start: new Date(), end: new Date() }
+            } // Initialisation avec les valeurs de l'événement ou les dates sélectionnées
+            onSubmit={handleFormSubmit}
+            onCancel={handleCloseForm}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForm}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-}
+};
 
 export default MyCalendar;
