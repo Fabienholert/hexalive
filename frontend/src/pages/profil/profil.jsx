@@ -1,55 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import "./profil.scss";
-
-// Création du contexte pour les profils
-export const ProfileContext = createContext();
-
-// Hook personnalisé pour utiliser le contexte des profils
-export const useProfiles = () => {
-  const context = useContext(ProfileContext);
-  if (!context) {
-    throw new Error(
-      "useProfiles doit être utilisé à l'intérieur d'un ProfileProvider"
-    );
-  }
-  return context;
-};
-
-// Provider component
-export const ProfileProvider = ({ children }) => {
-  const [profiles, setProfiles] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const addProfile = (profile) => {
-    setProfiles((currentProfiles) => [...currentProfiles, profile]);
-    setCurrentUser(profile); // Définir l'utilisateur actuel lors de la création du profil
-  };
-
-  const updateProfile = (updatedProfile) => {
-    setProfiles((currentProfiles) =>
-      currentProfiles.map((profile) =>
-        profile.email === updatedProfile.email ? updatedProfile : profile
-      )
-    );
-    setCurrentUser(updatedProfile);
-  };
-
-  const getProfiles = () => profiles;
-
-  return (
-    <ProfileContext.Provider
-      value={{ profiles, currentUser, addProfile, updateProfile, getProfiles }}
-    >
-      {children}
-    </ProfileContext.Provider>
-  );
-};
 
 export default function Profil() {
   const navigate = useNavigate();
-  const { addProfile, updateProfile, currentUser } = useProfiles();
+  const { register, updateProfile, currentUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -73,24 +32,43 @@ export default function Profil() {
       ...prev,
       [name]: value,
     }));
+    setError(""); // Réinitialiser l'erreur lors de la modification
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       if (currentUser) {
-        await updateProfile(formData);
-        setIsEditing(false);
-        alert("Profil mis à jour avec succès!");
+        const success = await updateProfile(formData);
+        if (success) {
+          setIsEditing(false);
+          alert("Profil mis à jour avec succès!");
+        } else {
+          setError(
+            "Erreur lors de la mise à jour du profil. Veuillez réessayer."
+          );
+        }
       } else {
-        await addProfile(formData);
-        alert("Profil créé avec succès!");
-        navigate("/carte");
+        console.log("Tentative d'inscription avec:", formData);
+        const success = await register(formData);
+        if (success) {
+          alert("Profil créé avec succès!");
+          navigate("/carte");
+        } else {
+          setError("Erreur lors de la création du profil. Veuillez réessayer.");
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la modification du profil:", error);
-      alert("Erreur lors de la modification du profil. Veuillez réessayer.");
+      setError(
+        error.response?.data?.message ||
+          "Une erreur est survenue. Veuillez réessayer."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -147,6 +125,8 @@ export default function Profil() {
         <form onSubmit={handleSubmit} className="profil__form">
           <h2>{currentUser ? "Modifier le profil" : "Créer un profil"}</h2>
 
+          {error && <div className="profil__error">{error}</div>}
+
           <div className="profil__form-section">
             <h3>Informations personnelles</h3>
             <label htmlFor="username">Nom d'utilisateur</label>
@@ -175,7 +155,7 @@ export default function Profil() {
               id="password"
               name="password"
               placeholder="Votre mot de passe"
-              required
+              required={!currentUser}
               value={formData.password}
               onChange={handleInputChange}
             />
@@ -235,14 +215,23 @@ export default function Profil() {
           </div>
 
           <div className="profil__form-actions">
-            <button type="submit" className="profil__submit-button">
-              {currentUser ? "Mettre à jour" : "Créer le profil"}
+            <button
+              type="submit"
+              className="profil__submit-button"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? "Chargement..."
+                : currentUser
+                ? "Mettre à jour"
+                : "Créer le profil"}
             </button>
             {isEditing && (
               <button
                 type="button"
                 className="profil__cancel-button"
                 onClick={() => setIsEditing(false)}
+                disabled={isLoading}
               >
                 Annuler
               </button>

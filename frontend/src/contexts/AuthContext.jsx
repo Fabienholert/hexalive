@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
+import axios from "axios";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
+const API_URL = "http://localhost:3000/api";
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -15,42 +17,100 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email, password) => {
-    // Ici, vous pourriez ajouter une vraie logique d'authentification avec une API
-    // Pour l'exemple, on vérifie juste si les champs ne sont pas vides
-    if (email && password) {
-      setIsAuthenticated(true);
-      setCurrentUser({ email });
-      // Stocker l'état de connexion dans localStorage
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userEmail", email);
-      return true;
-    }
-    return false;
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    setCurrentUser(null);
-    // Nettoyer localStorage
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userEmail");
-  };
-
-  // Vérifier l'état de connexion au chargement
-  React.useEffect(() => {
-    const storedAuth = localStorage.getItem("isAuthenticated");
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedAuth === "true" && storedEmail) {
-      setIsAuthenticated(true);
-      setCurrentUser({ email: storedEmail });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      fetchUserProfile();
+    } else {
+      setLoading(false);
     }
   }, []);
 
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/auth/profile`);
+      setCurrentUser(response.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error("Erreur lors de la récupération du profil:", error);
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      return true;
+    } catch (error) {
+      console.error("Erreur de connexion:", error);
+      return false;
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/register`, userData);
+
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      return true;
+    } catch (error) {
+      console.error("Erreur d'inscription:", error);
+      return false;
+    }
+  };
+
+  const updateProfile = async (userData) => {
+    try {
+      const response = await axios.put(`${API_URL}/auth/profile`, userData);
+      setCurrentUser(response.data.user);
+      return true;
+    } catch (error) {
+      console.error("Erreur de mise à jour du profil:", error);
+      return false;
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"];
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+  };
+
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, currentUser, login, logout }}
+      value={{
+        isAuthenticated,
+        currentUser,
+        login,
+        logout,
+        register,
+        updateProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>

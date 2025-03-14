@@ -6,29 +6,27 @@ import Calendrier from "./pages/calendrier/calendrier.jsx";
 import Carte from "./pages/carte/carte.jsx";
 import Home from "./pages/home/home.jsx";
 import Mail from "./pages/mail/mail.jsx";
-import Profil, { ProfileProvider } from "./pages/profil/profil.jsx";
+import Profil from "./pages/profil/profil.jsx";
 import Tableau from "./pages/tableau/tableau.jsx";
 
 export default function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <ProfileProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route element={<PrivateRoute />}>
-                <Route element={<Layout />}>
-                  <Route path="/profil" element={<Profil />} />
-                  <Route path="/calendrier" element={<Calendrier />} />
-                  <Route path="/tableau" element={<Tableau />} />
-                  <Route path="/carte" element={<Carte />} />
-                  <Route path="/mail" element={<Mail />} />
-                </Route>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route element={<PrivateRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/calendrier" element={<Calendrier />} />
+                <Route path="/tableau" element={<Tableau />} />
+                <Route path="/carte" element={<Carte />} />
+                <Route path="/mail" element={<Mail />} />
               </Route>
-            </Routes>
-          </BrowserRouter>
-        </ProfileProvider>
+            </Route>
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </div>
   );

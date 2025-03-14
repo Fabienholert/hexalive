@@ -18,6 +18,16 @@
   }
 }
 
+.profil__error {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  text-align: center;
+}
+
 .profil__view {
   .profil__info {
     background-color: #f8f9fa;
@@ -96,6 +106,11 @@
       &::placeholder {
         color: #adb5bd;
       }
+
+      &:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -113,11 +128,17 @@
       font-size: 1rem;
       transition: all 0.2s;
 
+      &:disabled {
+        background-color: #6c757d !important;
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
       &.profil__submit-button {
         background-color: #28a745;
         color: white;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: #218838;
         }
       }
@@ -126,7 +147,7 @@
         background-color: #dc3545;
         color: white;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: #c82333;
         }
       }
