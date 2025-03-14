@@ -1,11 +1,41 @@
-import React, { useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useProfileStore from "../../store/profileStore";
 import "./profil.scss";
+
+// Création du contexte pour les profils
+export const ProfileContext = createContext();
+
+// Hook personnalisé pour utiliser le contexte des profils
+export const useProfiles = () => {
+  const context = useContext(ProfileContext);
+  if (!context) {
+    throw new Error(
+      "useProfiles doit être utilisé à l'intérieur d'un ProfileProvider"
+    );
+  }
+  return context;
+};
+
+// Provider component
+export const ProfileProvider = ({ children }) => {
+  const [profiles, setProfiles] = useState([]);
+
+  const addProfile = (profile) => {
+    setProfiles((currentProfiles) => [...currentProfiles, profile]);
+  };
+
+  const getProfiles = () => profiles;
+
+  return (
+    <ProfileContext.Provider value={{ profiles, addProfile, getProfiles }}>
+      {children}
+    </ProfileContext.Provider>
+  );
+};
 
 export default function Profil() {
   const navigate = useNavigate();
-  const addProfile = useProfileStore((state) => state.addProfile);
+  const { addProfile } = useProfiles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ville, setVille] = useState("");
@@ -13,7 +43,7 @@ export default function Profil() {
   const [facebook, setFacebook] = useState("");
   const [instagram, setInstagram] = useState("");
   const [tiktok, setTiktok] = useState("");
-  const [username, setUsername] = useState(""); // Ajout de l'état pour le nom d'utilisateur
+  const [username, setUsername] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +61,7 @@ export default function Profil() {
     try {
       addProfile(newProfile);
       alert("Profil créé avec succès!");
-      navigate("/carte"); // Redirection vers la carte après création
+      navigate("/carte");
     } catch (error) {
       console.error("Erreur lors de la création du profil:", error);
       alert("Erreur lors de la création du profil. Veuillez réessayer.");
@@ -74,12 +104,12 @@ export default function Profil() {
         />
         <label htmlFor="codepostal">Code Postal</label>
         <input
-          type="text" // Utilisation de type="text" pour gérer les codes postaux commençant par 0
+          type="text"
           id="codepostal"
           name="codepostal"
           placeholder="Votre code postal"
           required
-          pattern="[0-9]{5}" // Validation: 5 chiffres
+          pattern="[0-9]{5}"
           title="Veuillez entrer un code postal à 5 chiffres"
           value={codePostal}
           onChange={(e) => setCodePostal(e.target.value)}

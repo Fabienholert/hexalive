@@ -2,7 +2,7 @@ import fr from "date-fns/locale/fr";
 import React, { useState } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import useProfileStore from "../../store/profileStore";
+import { useProfiles } from "../profil/profil.jsx";
 import "./calendrier.scss";
 
 registerLocale("fr", fr);
@@ -16,7 +16,7 @@ function CalendarWithModal() {
   const [eventName, setEventName] = useState("");
   const [emailContact, setEmailContact] = useState("");
   const [freeField, setFreeField] = useState("");
-  const profiles = useProfileStore((state) => state.profiles);
+  const { profiles } = useProfiles();
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

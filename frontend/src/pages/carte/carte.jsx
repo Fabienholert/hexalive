@@ -2,7 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import useProfileStore from "../../store/profileStore";
+import { useProfiles } from "../profil/profil.jsx";
 import "./carte.scss";
 
 // Correction des icônes Leaflet
@@ -17,7 +17,7 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function Carte() {
-  const profiles = useProfileStore((state) => state.profiles);
+  const { profiles } = useProfiles();
   const [profilesWithCoords, setProfilesWithCoords] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: null,
