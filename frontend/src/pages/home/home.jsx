@@ -22,7 +22,6 @@ export default function Home() {
   };
 
   const handleRegisterClick = () => {
-    // Redirection vers la page d'inscription
     navigate("/profil");
   };
 
@@ -64,9 +63,15 @@ export default function Home() {
           </button>
         </form>
 
-        <button type="button" onClick={handleRegisterClick}>
-          S'inscrire
-        </button>
+        <div className="home__buttons-container">
+          <button
+            type="button"
+            onClick={handleRegisterClick}
+            className="home__register-btn"
+          >
+            S'inscrire
+          </button>
+        </div>
       </div>
     </div>
   );

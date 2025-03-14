@@ -1,20 +1,98 @@
-header {
-  width: 100%;
+.header {
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #ffffff, #f8f0ff);
+  box-shadow: 0 2px 4px rgba(155, 107, 155, 0.1);
 
-  .header__nav {
+  &__monLogo {
+    height: 50px;
+  }
+
+  &__nav {
     display: flex;
+    gap: 1.5rem;
     align-items: center;
-    gap: 30px;
-    margin: 0 auto;
-  }
-  .header__link {
-    text-decoration: none;
   }
 
-  img {
-    width: 10%;
-    height: 10%;
+  &__link {
+    text-decoration: none;
+    color: #6b5b7b;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #9b6b9b;
+    }
+
+    &.active {
+      color: #b06ab3;
+      font-weight: 600;
+    }
+  }
+
+  &__logout-btn {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #ff6b6b, #ff3366);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(255, 51, 102, 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 1024px) {
+  .header {
+    padding: 1rem;
+
+    &__nav {
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    padding: 1rem;
+
+    &__monLogo {
+      margin-bottom: 1rem;
+    }
+
+    &__nav {
+      flex-direction: column;
+      width: 100%;
+      gap: 0.75rem;
+    }
+
+    &__link {
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+
+      &:hover {
+        background-color: #f8f0ff;
+      }
+    }
+
+    &__logout-btn {
+      width: 100%;
+      margin: 0.5rem 0 0 0;
+    }
   }
 }

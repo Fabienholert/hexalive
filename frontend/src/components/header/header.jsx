@@ -1,8 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import MonLogo from "../../assets/monlogo.png";
+import { useAuth } from "../../contexts/AuthContext";
 import "./header.scss";
 
 export default function Header() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <header className="header">
       <img src={MonLogo} alt="mon logo " className="header__monLogo" />
@@ -31,6 +40,9 @@ export default function Header() {
           {" "}
           Mail d'accréditation
         </NavLink>
+        <button onClick={handleLogout} className="header__logout-btn">
+          Se déconnecter
+        </button>
       </nav>
     </header>
   );

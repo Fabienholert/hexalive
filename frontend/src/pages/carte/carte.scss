@@ -3,28 +3,43 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    background: linear-gradient(135deg, #f8f0ff 0%, #ffffff 100%);
   }
 
   h2,
   h3 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #333;
+    color: #453b52;
   }
 
   h2 {
     font-size: 2rem;
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(135deg, #b06ab3, #4568dc);
+      border-radius: 2px;
+    }
   }
 
   h3 {
     font-size: 1.5rem;
+    color: #6b5b7b;
   }
 
   &__map-container {
     margin-bottom: 2rem;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px rgba(155, 107, 155, 0.1);
 
     .leaflet-container {
       height: 500px;
@@ -40,7 +55,7 @@
   &__table-wrapper {
     overflow-x: auto;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px rgba(155, 107, 155, 0.1);
   }
 
   &__table {
@@ -52,18 +67,18 @@
     td {
       padding: 1rem;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e5e0eb;
     }
 
     th {
-      background-color: #f8f9fa;
+      background-color: #f8f0ff;
       font-weight: 600;
-      color: #2c3e50;
+      color: #453b52;
       cursor: pointer;
       transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: #e9ecef;
+        background-color: #f3f0f6;
       }
     }
 
@@ -71,7 +86,7 @@
       transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: #f8f9fa;
+        background-color: #f8f0ff;
       }
     }
   }
@@ -86,21 +101,22 @@
       border-radius: 4px;
       font-size: 0.8rem;
       font-weight: 600;
-      background-color: #e74c3c;
+      background: linear-gradient(135deg, #b06ab3, #4568dc);
       color: white;
     }
   }
 
   &__popup {
     h3 {
-      color: #2c3e50;
+      color: #453b52;
       margin-bottom: 0.5rem;
       font-size: 1.2rem;
+      text-align: left;
     }
 
     p {
       margin: 0.3rem 0;
-      color: #34495e;
+      color: #6b5b7b;
       font-size: 0.9rem;
     }
   }
@@ -116,25 +132,26 @@
     background: white;
     border-radius: 15px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(155, 107, 155, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
       transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 12px rgba(155, 107, 155, 0.15);
     }
 
     h3 {
-      color: #2c3e50;
+      color: #453b52;
       font-size: 1.5rem;
       margin-bottom: 1rem;
-      border-bottom: 2px solid #e74c3c;
+      border-bottom: 2px solid #b06ab3;
       padding-bottom: 0.5rem;
+      text-align: left;
     }
 
     p {
       margin: 0.5rem 0;
-      color: #34495e;
+      color: #6b5b7b;
       font-size: 1rem;
 
       &:not(:last-child) {
@@ -146,18 +163,18 @@
   &__social-links {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #e5e0eb;
 
     p {
       display: flex;
       align-items: center;
-      color: #7f8c8d;
+      color: #9c93af;
       font-size: 0.9rem;
 
       &:before {
         content: "•";
         margin-right: 0.5rem;
-        color: #e74c3c;
+        color: #b06ab3;
       }
     }
   }
