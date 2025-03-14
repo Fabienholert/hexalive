@@ -1,5 +1,5 @@
 @use "sass:color";
-@import "../../variables.scss";
+@use "../../variables.scss" as *;
 
 // Variables
 $primary-gradient: linear-gradient(135deg, #6e8efb, #4a6ee0);
