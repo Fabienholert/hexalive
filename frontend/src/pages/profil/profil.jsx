@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useProfileStore from "../../store/profileStore";
 import "./profil.scss";
 
 export default function Profil() {
+  const navigate = useNavigate();
+  const addProfile = useProfileStore((state) => state.addProfile);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ville, setVille] = useState("");
@@ -14,15 +18,23 @@ export default function Profil() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // *** CODE À REMPLACER AVEC L'APPEL API RÉEL POUR LA MISE À JOUR DU PROFIL ***
+    const newProfile = {
+      username,
+      email,
+      ville,
+      codePostal,
+      facebook,
+      instagram,
+      tiktok,
+    };
+
     try {
-      // const response = await fetch('/api/profil', { ... });
-      // ...
-      console.log("Profil mis à jour (simulé) !");
-      alert("Profil mis à jour avec succès!"); // À remplacer par un feedback visuel plus élégant
+      addProfile(newProfile);
+      alert("Profil créé avec succès!");
+      navigate("/carte"); // Redirection vers la carte après création
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du profil:", error);
-      alert("Erreur lors de la mise à jour du profil. Veuillez réessayer.");
+      console.error("Erreur lors de la création du profil:", error);
+      alert("Erreur lors de la création du profil. Veuillez réessayer.");
     }
   };
 

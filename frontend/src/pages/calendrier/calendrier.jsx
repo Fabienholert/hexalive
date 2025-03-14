@@ -1,7 +1,8 @@
 import fr from "date-fns/locale/fr";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import useProfileStore from "../../store/profileStore";
 import "./calendrier.scss";
 
 registerLocale("fr", fr);
@@ -15,22 +16,7 @@ function CalendarWithModal() {
   const [eventName, setEventName] = useState("");
   const [emailContact, setEmailContact] = useState("");
   const [freeField, setFreeField] = useState("");
-  const [utilisateurs, setUtilisateurs] = useState([]); // Ajout de l'état pour les utilisateurs
-
-  useEffect(() => {
-    // Simule un appel à une API pour récupérer les utilisateurs
-    const fetchUtilisateurs = async () => {
-      // Remplace ceci par ta logique pour récupérer les utilisateurs
-      const utilisateursData = [
-        { id: "1", nom: "Alice" },
-        { id: "2", nom: "Bob" },
-        { id: "3", nom: "Charlie" },
-      ];
-      setUtilisateurs(utilisateursData);
-    };
-
-    fetchUtilisateurs();
-  }, []); // L'effet s'exécute une seule fois au montage du composant
+  const profiles = useProfileStore((state) => state.profiles);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -94,17 +80,17 @@ function CalendarWithModal() {
             <form onSubmit={handleSubmit}>
               <select value={utilisateur1} onChange={handleUtilisateur1Change}>
                 <option value="">Sélectionner un utilisateur</option>
-                {utilisateurs.map((utilisateur) => (
-                  <option key={utilisateur.id} value={utilisateur.id}>
-                    {utilisateur.nom}
+                {profiles.map((profile, index) => (
+                  <option key={index} value={profile.username}>
+                    {profile.username} ({profile.ville})
                   </option>
                 ))}
               </select>
               <select value={utilisateur2} onChange={handleUtilisateur2Change}>
                 <option value="">Sélectionner un utilisateur</option>
-                {utilisateurs.map((utilisateur) => (
-                  <option key={utilisateur.id} value={utilisateur.id}>
-                    {utilisateur.nom}
+                {profiles.map((profile, index) => (
+                  <option key={index} value={profile.username}>
+                    {profile.username} ({profile.ville})
                   </option>
                 ))}
               </select>
