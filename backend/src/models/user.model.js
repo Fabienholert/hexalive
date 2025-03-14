@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // Importez mongoose
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
@@ -44,7 +44,7 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error);
+    return next(error); // Important de retourner l'erreur
   }
 });
 

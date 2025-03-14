@@ -1,13 +1,11 @@
-import { Outlet } from "react-router-dom";
+import React from "react";
 import Header from "./components/header/header";
 
-export default function Layout() {
+export default function Layout({ children }) {
   return (
     <>
       <Header />
-      <main>
-        <Outlet /> {/* Les routes enfants seront affichées ici */}
-      </main>
+      <main>{children}</main>
     </>
   );
 }

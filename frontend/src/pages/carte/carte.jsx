@@ -1,8 +1,8 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { useAuth } from "../../contexts/AuthContext"; // Importez useAuth
+import { AuthContext } from "../../contexts/AuthContext";
 import "./carte.scss";
 
 // Correction des icônes Leaflet
@@ -17,8 +17,8 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function Carte() {
-  const { currentUser } = useAuth(); // Utilisez useAuth pour obtenir les infos de l'utilisateur
-  const [profiles, setProfiles] = useState([]); // état local pour stocker les profils
+  const { currentUser } = useContext(AuthContext);
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
     if (currentUser) {

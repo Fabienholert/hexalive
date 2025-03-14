@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import "./home.scss";
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, authError, register } = useContext(AuthContext); // 1. Déclare et appelle le contexte
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,17 +17,17 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      console.log("Tentative de connexion avec :", { email, password }); // AJOUTER : Vérification des données
+      console.log("Tentative de connexion avec :", { email, password });
       const success = await login(email, password);
-      console.log("Connexion réussie ? ", success); // AJOUTER : Vérification du succès
+      console.log("Connexion réussie ? ", success);
       if (success) {
-        console.log("Navigation vers /profil"); // AJOUTER : Vérification de la navigation
+        console.log("Navigation vers /profil");
         navigate("/profil");
       } else {
-        setError("Email ou mot de passe incorrect");
+        setError(authError || "Email ou mot de passe incorrect"); // 2. Affiche l’erreur
       }
     } catch (error) {
-      console.error("Erreur de connexion:", error);
+      console.error("Erreur de connexion :", error);
       setError(
         error.response?.data?.message ||
           "Une erreur est survenue lors de la connexion"
@@ -37,9 +37,28 @@ export default function Home() {
     }
   };
 
-  const handleRegisterClick = () => {
-    console.log("Clic sur S'inscrire, navigation vers /profil"); // AJOUTER : Vérification du clic
-    navigate("/profil");
+  const handleRegisterClick = async () => {
+    setIsLoading(true);
+    setError(""); // Réinitialisez l'erreur
+    try {
+      const success = await register({
+        email,
+        password,
+        username: email.split("@")[0],
+        ville: "Inconnu",
+        codePostal: "00000",
+      }); // Utilisez register
+      if (success) {
+        navigate("/profil");
+      } else {
+        setError(authError || "Erreur lors de l’inscription."); // 3. affiche l’erreur ici aussi
+      }
+    } catch (error) {
+      console.error("Erreur lors de l’inscription :", error);
+      setError("Erreur lors de l’inscription.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

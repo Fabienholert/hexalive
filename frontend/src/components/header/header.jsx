@@ -1,49 +1,47 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import MonLogo from "../../assets/monlogo.png";
-import { useAuth } from "../../contexts/AuthContext";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext"; // Importez AuthContext
 import "./header.scss";
 
-export default function Header() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+function Header() {
+  const { currentUser, logout } = useContext(AuthContext); // Utilisez useContext pour accéder au contexte
 
   return (
     <header className="header">
-      <img src={MonLogo} alt="mon logo " className="header__monLogo" />
+      <div className="header__logo">HexaLive</div>
       <nav className="header__nav">
-        <NavLink to="/" className="header__link">
-          {" "}
+        <Link to="/" className="header__nav-link">
           Accueil
-        </NavLink>
-        <NavLink to="/profil" className="header__link">
-          {" "}
-          Profil
-        </NavLink>
-        <NavLink to="/calendrier" className="header__link">
-          {" "}
+        </Link>
+        <Link to="/carte" className="header__nav-link">
+          Carte
+        </Link>
+        <Link to="/calendrier" className="header__nav-link">
           Calendrier
-        </NavLink>
-        <NavLink to="/tableau" className="header__link">
-          {" "}
-          Tableau d'accréditation
-        </NavLink>
-        <NavLink to="/carte" className="header__link">
-          {" "}
-          Carte des membres
-        </NavLink>
-        <NavLink to="/mail" className="header__link">
-          {" "}
-          Mail d'accréditation
-        </NavLink>
-        <button onClick={handleLogout} className="header__logout-btn">
-          Se déconnecter
-        </button>
+        </Link>
+        <Link to="/tableau" className="header__nav-link">
+          Tableau
+        </Link>
+        <Link to="/mail" className="header__nav-link">
+          Mail
+        </Link>
+        {currentUser ? (
+          <>
+            <Link to="/profil" className="header__nav-link">
+              Profil
+            </Link>
+            <button onClick={logout} className="header__nav-button">
+              Déconnexion
+            </button>
+          </>
+        ) : (
+          <Link to="/" className="header__nav-link">
+            Connexion
+          </Link>
+        )}
       </nav>
     </header>
   );
 }
+
+export default Header;

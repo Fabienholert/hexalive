@@ -144,12 +144,30 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ message: "Mises à jour non valides" });
     }
 
-    updates.forEach((update) => (req.user[update] = req.body[update]));
-    await req.user.save();
+    const user = await User.findById(req.user._id);
 
+    if (!user) {
+      return res.status(404).send();
+    }
+    updates.forEach((update) => {
+      if (allowedUpdates.includes(update)) {
+        user[update] = req.body[update];
+      }
+    });
+
+    await user.save();
     res.json({
       message: "Profil mis à jour avec succès",
-      user: req.user,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        ville: user.ville,
+        codePostal: user.codePostal,
+        facebook: user.facebook,
+        instagram: user.instagram,
+        tiktok: user.tiktok,
+      },
     });
   } catch (error) {
     res.status(400).json({

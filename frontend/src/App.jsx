@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -16,15 +17,60 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route element={<PrivateRoute />}>
-              <Route element={<Layout />}>
-                <Route path="/profil" element={<Profil />} />
-                <Route path="/calendrier" element={<Calendrier />} />
-                <Route path="/tableau" element={<Tableau />} />
-                <Route path="/carte" element={<Carte />} />
-                <Route path="/mail" element={<Mail />} />
-              </Route>
-            </Route>
+
+            {/* Routes publiques */}
+
+            {/* Routes privées */}
+            <Route
+              path="/profil"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Profil />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/calendrier"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Calendrier />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tableau"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Tableau />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/carte"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Carte />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/mail"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Mail />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
