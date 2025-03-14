@@ -7,21 +7,38 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
-    if (login(email, password)) {
-      navigate("/profil");
-    } else {
-      setError("Email ou mot de passe incorrect");
+    try {
+      console.log("Tentative de connexion avec :", { email, password }); // AJOUTER : Vérification des données
+      const success = await login(email, password);
+      console.log("Connexion réussie ? ", success); // AJOUTER : Vérification du succès
+      if (success) {
+        console.log("Navigation vers /profil"); // AJOUTER : Vérification de la navigation
+        navigate("/profil");
+      } else {
+        setError("Email ou mot de passe incorrect");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion:", error);
+      setError(
+        error.response?.data?.message ||
+          "Une erreur est survenue lors de la connexion"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRegisterClick = () => {
+    console.log("Clic sur S'inscrire, navigation vers /profil"); // AJOUTER : Vérification du clic
     navigate("/profil");
   };
 
@@ -43,6 +60,7 @@ export default function Home() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Votre email"
+              disabled={isLoading}
             />
           </div>
 
@@ -55,11 +73,16 @@ export default function Home() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Votre mot de passe"
+              disabled={isLoading}
             />
           </div>
 
-          <button type="submit" className="home__submit-btn">
-            Se connecter
+          <button
+            type="submit"
+            className="home__submit-btn"
+            disabled={isLoading}
+          >
+            {isLoading ? "Connexion en cours..." : "Se connecter"}
           </button>
         </form>
 
@@ -68,6 +91,7 @@ export default function Home() {
             type="button"
             onClick={handleRegisterClick}
             className="home__register-btn"
+            disabled={isLoading}
           >
             S'inscrire
           </button>

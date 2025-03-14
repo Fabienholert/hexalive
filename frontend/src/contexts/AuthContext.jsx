@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null); // Nouvel état pour les erreurs
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,9 +35,16 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get(`${API_URL}/auth/profile`);
       setCurrentUser(response.data);
       setIsAuthenticated(true);
+      setAuthError(null); // Effacer les erreurs précédentes
     } catch (error) {
       console.error("Erreur lors de la récupération du profil:", error);
-      logout();
+      // Vérifier le code d'état avant de déconnecter l'utilisateur
+      if (error.response && error.response.status === 401) {
+        logout(); // Déconnecter si le token est invalide
+      } else {
+        // Gérer les autres erreurs (par exemple, afficher un message à l'utilisateur)
+        setAuthError("Erreur lors de la récupération du profil.");
+      }
     } finally {
       setLoading(false);
     }
@@ -44,10 +52,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log("Tentative de connexion avec :", { email, password }); // AJOUTER
       const response = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });
+
+      console.log("Réponse de l'API :", response); // AJOUTER
+      console.log("Statut de la réponse :", response.status); // AJOUTER
+      console.log("Données de la réponse :", response.data); // AJOUTER
 
       const { token, user } = response.data;
       localStorage.setItem("token", token);
@@ -55,9 +68,15 @@ export const AuthProvider = ({ children }) => {
 
       setCurrentUser(user);
       setIsAuthenticated(true);
+      setAuthError(null); // Effacer les erreurs précédentes
       return true;
     } catch (error) {
       console.error("Erreur de connexion:", error);
+      console.error("Détails de l'erreur :", error.response); // AJOUTER
+
+      setAuthError(
+        error.response?.data?.message || "Email ou mot de passe incorrect"
+      ); // Définir le message d'erreur
       return false;
     }
   };
@@ -72,9 +91,13 @@ export const AuthProvider = ({ children }) => {
 
       setCurrentUser(user);
       setIsAuthenticated(true);
+      setAuthError(null); // Effacer les erreurs précédentes
       return true;
     } catch (error) {
       console.error("Erreur d'inscription:", error);
+      setAuthError(
+        error.response?.data?.message || "Erreur lors de l'inscription"
+      ); // Définir le message d'erreur
       return false;
     }
   };
@@ -82,10 +105,15 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (userData) => {
     try {
       const response = await axios.put(`${API_URL}/auth/profile`, userData);
-      setCurrentUser(response.data.user);
+      setCurrentUser(response.data); // Mettre à jour avec les données complètes
+      setAuthError(null); // Effacer les erreurs précédentes
       return true;
     } catch (error) {
       console.error("Erreur de mise à jour du profil:", error);
+      setAuthError(
+        error.response?.data?.message ||
+          "Erreur lors de la mise à jour du profil"
+      ); // Définir le message d'erreur
       return false;
     }
   };
@@ -95,6 +123,7 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common["Authorization"];
     setCurrentUser(null);
     setIsAuthenticated(false);
+    setAuthError(null); // Effacer les erreurs
   };
 
   if (loading) {
@@ -110,6 +139,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         register,
         updateProfile,
+        authError, // Fournir l'état d'erreur
       }}
     >
       {children}

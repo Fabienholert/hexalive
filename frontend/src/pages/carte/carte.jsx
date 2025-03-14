@@ -2,7 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { useProfiles } from "../profil/profil.jsx";
+import { useAuth } from "../../contexts/AuthContext"; // Importez useAuth
 import "./carte.scss";
 
 // Correction des icônes Leaflet
@@ -17,7 +17,17 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function Carte() {
-  const { profiles } = useProfiles();
+  const { currentUser } = useAuth(); // Utilisez useAuth pour obtenir les infos de l'utilisateur
+  const [profiles, setProfiles] = useState([]); // état local pour stocker les profils
+
+  useEffect(() => {
+    if (currentUser) {
+      setProfiles([currentUser]);
+    } else {
+      setProfiles([]);
+    }
+  }, [currentUser]);
+
   const [profilesWithCoords, setProfilesWithCoords] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -86,7 +96,7 @@ export default function Carte() {
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {profilesWithCoords.map((profile, index) => (
             <Marker key={index} position={profile.coordinates}>

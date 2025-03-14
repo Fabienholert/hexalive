@@ -1,8 +1,8 @@
 import fr from "date-fns/locale/fr";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useProfiles } from "../profil/profil.jsx";
+import { useAuth } from "../../contexts/AuthContext"; // Importez useAuth
 import "./calendrier.scss";
 
 registerLocale("fr", fr);
@@ -17,7 +17,18 @@ function CalendarWithModal() {
   const [emailContact, setEmailContact] = useState("");
   const [freeField, setFreeField] = useState("");
   const [motifDemande, setMotifDemande] = useState("");
-  const { profiles } = useProfiles();
+  const { currentUser } = useAuth(); // Utilisez useAuth pour obtenir les infos de l'utilisateur
+
+  const [profiles, setProfiles] = useState([]); //état local pour stocker les profils
+
+  useEffect(() => {
+    // Utilisez currentUser pour créer un tableau de profils (ou récupérez-les d'une autre source)
+    if (currentUser) {
+      setProfiles([currentUser]); // Créez un tableau avec l'utilisateur actuel comme seul profil
+    } else {
+      setProfiles([]);
+    }
+  }, [currentUser]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -145,11 +156,12 @@ function CalendarWithModal() {
                     required
                   >
                     <option value="">Sélectionner un utilisateur</option>
-                    {profiles.map((profile, index) => (
-                      <option key={index} value={profile.username}>
-                        {profile.username} ({profile.ville})
-                      </option>
-                    ))}
+                    {profiles &&
+                      profiles.map((profile, index) => (
+                        <option key={index} value={profile.username}>
+                          {profile.username} ({profile.ville})
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -160,11 +172,12 @@ function CalendarWithModal() {
                     onChange={handleUtilisateur2Change}
                   >
                     <option value="">Aucun utilisateur secondaire</option>
-                    {profiles.map((profile, index) => (
-                      <option key={index} value={profile.username}>
-                        {profile.username} ({profile.ville})
-                      </option>
-                    ))}
+                    {profiles &&
+                      profiles.map((profile, index) => (
+                        <option key={index} value={profile.username}>
+                          {profile.username} ({profile.ville})
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
