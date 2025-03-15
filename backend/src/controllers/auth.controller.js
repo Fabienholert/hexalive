@@ -8,6 +8,19 @@ const generateToken = (userId) => {
   });
 };
 
+// Récupérer tous les utilisateurs
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur lors de la récupération des utilisateurs",
+      error: error.message,
+    });
+  }
+};
+
 // Inscription
 exports.register = async (req, res) => {
   try {
