@@ -36,7 +36,7 @@ exports.register = async (req, res) => {
     } = req.body;
 
     // Vérifier si l'utilisateur existe déjà
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé" });
     }
@@ -85,7 +85,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     // Vérifier si l'utilisateur existe
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res
         .status(401)

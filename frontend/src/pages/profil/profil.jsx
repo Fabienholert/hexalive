@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext"; // Importez le contexte
 import "./profil.scss";
+import { useState, useContext, useEffect } from "react"; // Importez useState, useContext et useEffect
+import axios from "axios"; // Importez axios
 
 export default function Profil() {
   const { currentUser, updateProfile, register } = useContext(AuthContext);
@@ -60,24 +61,26 @@ export default function Profil() {
           setIsEditing(false);
           alert("Profil mis à jour avec succès!");
         } else {
-          setError(
-            "Erreur lors de la mise à jour du profil. Veuillez réessayer."
-          );
+          setError("Erreur lors de la mise à jour du profil. Veuillez réessayer.");
         }
       } else {
         // Pour l'inscription, on a besoin de l'email et du mot de passe
-        const registerData = {
-          ...updateData,
-          email: formData.email,
-          password: formData.password,
-        };
-        console.log("Tentative d'inscription avec:", registerData);
-        const success = await register(registerData);
-        if (success) {
-          alert("Profil créé avec succès!");
-          navigate("/carte");
+        if (formData.email && formData.password) {
+          const registerData = {
+            ...updateData,
+            email: formData.email,
+            password: formData.password,
+          };
+          console.log("Tentative d'inscription avec:", registerData);
+          const success = await register(registerData);
+          if (success) {
+            alert("Profil créé avec succès!");
+            navigate("/carte");
+          } else {
+            setError("Erreur lors de la création du profil. Veuillez réessayer.");
+          }
         } else {
-          setError("Erreur lors de la création du profil. Veuillez réessayer.");
+          setError("Veuillez entrer un email et un mot de passe pour vous inscrire.");
         }
       }
     } catch (error) {
@@ -177,7 +180,7 @@ export default function Profil() {
               required={!currentUser}
               value={formData.password}
               onChange={handleInputChange}
-              autoComplete="current-password" // Correction ici
+              autoComplete="current-password"
             />
             <label htmlFor="codepostal">Code Postal</label>
             <input
@@ -262,3 +265,12 @@ export default function Profil() {
     </div>
   );
 }
+
+export const register = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/register`, userData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

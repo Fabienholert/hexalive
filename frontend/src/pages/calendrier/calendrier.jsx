@@ -1,3 +1,4 @@
+import axios from "axios";
 import fr from "date-fns/locale/fr";
 import React, { useContext, useEffect, useState } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
@@ -17,6 +18,8 @@ function CalendarWithModal() {
   const [profiles, setProfiles] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // États pour le formulaire
   const [utilisateur1, setUtilisateur1] = useState("");
@@ -39,50 +42,24 @@ function CalendarWithModal() {
     // Charger les profils utilisateurs
     const fetchProfiles = async () => {
       try {
-        // Option 1: Si vous avez une API pour récupérer tous les utilisateurs
-        // const response = await fetch('/api/users');
-        // const data = await response.json();
-        // setProfiles(data);
-
-        // Option 2: Utiliser un état simulé pour le développement
-        // Récupérer les profils stockés localement (pour la démo)
-        const storedProfiles = localStorage.getItem("userProfiles");
-        if (storedProfiles) {
-          setProfiles(JSON.parse(storedProfiles));
-        } else {
-          // Créer quelques profils de test si aucun n'existe
-          const testProfiles = [
-            {
-              id: "1",
-              username: "utilisateur1",
-              email: "user1@example.com",
-              ville: "Paris",
-              codePostal: "75001",
-            },
-            {
-              id: "2",
-              username: "utilisateur2",
-              email: "user2@example.com",
-              ville: "Lyon",
-              codePostal: "69001",
-            },
-          ];
-
-          // Ajouter l'utilisateur actuel s'il existe
-          if (currentUser) {
-            testProfiles.push(currentUser);
-          }
-
-          setProfiles(testProfiles);
-          localStorage.setItem("userProfiles", JSON.stringify(testProfiles));
-        }
-      } catch (error) {
-        console.error("Erreur lors du chargement des profils:", error);
+        const response = await axios.get(
+          "http://localhost:3000/api/auth/users"
+        );
+        setProfiles(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des profils:", err);
+        setError("Impossible de charger les profils");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfiles();
-  }, [currentUser]);
+  }, []);
+
+  if (loading) return <div>Chargement des profils...</div>;
+  if (error) return <div>{error}</div>;
 
   // Fonction pour vérifier si une date a des événements
   const hasEvents = (date) => {
@@ -209,7 +186,7 @@ function CalendarWithModal() {
               <option value="">Sélectionnez un utilisateur</option>
               {profiles.map((profile) => (
                 <option
-                  key={profile.id || profile.email}
+                  key={profile._id}
                   value={profile.username || profile.email}
                 >
                   {profile.username || profile.email}{" "}
@@ -233,7 +210,7 @@ function CalendarWithModal() {
                 )
                 .map((profile) => (
                   <option
-                    key={profile.id || profile.email}
+                    key={profile._id}
                     value={profile.username || profile.email}
                   >
                     {profile.username || profile.email}{" "}

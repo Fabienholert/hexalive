@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = 'http://localhost:3000/api/auth';
 const AuthContext = createContext();
 
 // Exportez AuthContext
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   const fetchUserProfile = async () => {
     try {
       console.log("Tentative de récupération du profil...");
-      const response = await axios.get(`${API_URL}/auth/profile`);
+      const response = await axios.get(`${API_URL}/profile`);
 
       console.log("Réponse de l'API (fetchUserProfile) :", response);
       console.log("Statut de la réponse (fetchUserProfile) :", response.status);
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       console.log("Tentative de connexion avec :", { email, password });
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await axios.post(`${API_URL}/login`, {
         email,
         password,
       });
@@ -93,8 +93,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      console.log("Tentative d'inscription avec :", userData);
-      const response = await axios.post(`${API_URL}/auth/register`, userData);
+      const response = await axios.post(`${API_URL}/register`, userData);
 
       console.log("Réponse de l'API (register) :", response);
       console.log("Statut de la réponse (register) :", response.status);
@@ -121,7 +120,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (userData) => {
     try {
       console.log("Tentative de mise à jour du profil avec :", userData);
-      const response = await axios.put(`${API_URL}/auth/profile`, userData);
+      const response = await axios.put(`${API_URL}/profile`, userData);
 
       console.log("Réponse de l'API (updateProfile) :", response);
       console.log("Statut de la réponse (updateProfile) :", response.status);

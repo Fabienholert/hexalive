@@ -30,7 +30,7 @@ export default function Carte() {
     const fetchAllProfiles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/users`);
+        const response = await axios.get(`${API_URL}/auth/users`);
         console.log("Profils récupérés:", response.data);
         setProfiles(response.data);
         setError(null);
